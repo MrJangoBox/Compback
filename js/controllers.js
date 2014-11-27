@@ -10,6 +10,10 @@ angular.module('poliApp.controllers', ['poliApp.services'])
         email: "",
         password: ""
     };
+    
+    $rootScope.showMenuButton = function () {
+                return "false";
+            };
  
     $scope.validateUser = function () {
         var email = this.user.email;
@@ -83,11 +87,9 @@ angular.module('poliApp.controllers', ['poliApp.services'])
                 $scope.categoryExist = false;
                 
                 numOfCategories = $scope.categoriesLoaded.length;
-                console.log(numOfCategories);
                 
                 if (numOfCategories == 0) {
                         $scope.categoriesLoaded.push(data[i].category);
-                        console.log(data[i].category);
                 }
                 
                 for (var j = 0; j < numOfCategories; j++) {    
@@ -127,7 +129,11 @@ angular.module('poliApp.controllers', ['poliApp.services'])
             $rootScope.notify("Oops something went wrong!! Please try again later");
         });
     });
- 
+    
+    $rootScope.showMenuButton = function () {
+                return "true";
+            };
+    
     $rootScope.selectCategory = function (category) {
                 $window.location.href="#/base/category"
                 $rootScope.category = category
