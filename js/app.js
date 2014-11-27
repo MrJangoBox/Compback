@@ -1,4 +1,4 @@
-angular.module('baseApp', ['ionic', 'baseApp.controllers', 'baseApp.services'])
+angular.module('poliApp', ['ionic', 'poliApp.controllers', 'poliApp.services'])
     .run(function ($ionicPlatform) {
         $ionicPlatform.ready(function () {
             if (window.StatusBar) {
@@ -42,6 +42,33 @@ angular.module('baseApp', ['ionic', 'baseApp.controllers', 'baseApp.services'])
                 views: {
                     'base-list': {
                         templateUrl: 'templates/base-list.html',
+                        controller: 'myListCtrl'
+                    }
+                }
+            })
+            .state('base.category', {
+                url: '/category',
+                views: {
+                    'base-list': {
+                        templateUrl: 'templates/base-category.html',
+                        controller: 'categoryCtrl'
+                    }
+                }
+            })
+            .state('base.topic', {
+                url: '/topic',
+                views: {
+                    'base-list': {
+                        templateUrl: 'templates/base-topic.html',
+                        controller: 'categoryCtrl'
+                    }
+                }
+            })
+            .state('base.description', {
+                url: '/description',
+                views: {
+                    'base-description': {
+                        templateUrl: 'templates/base-description.html',
                         controller: 'myListCtrl'
                     }
                 }

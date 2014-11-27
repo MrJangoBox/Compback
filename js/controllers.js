@@ -1,7 +1,7 @@
-angular.module('baseApp.controllers', ['baseApp.services'])
+angular.module('poliApp.controllers', ['poliApp.services'])
  
 .controller('SignInCtrl', function ($rootScope, $scope, API, $window) {
-    // if the user is already logged in, take him to his base app
+    // if the user is already logged in, take him to his SauveApp app
     if ($rootScope.isSessionActive()) {
         $window.location.href = ('#/base/list');
     }
@@ -78,9 +78,30 @@ angular.module('baseApp.controllers', ['baseApp.services'])
             API.getAll($rootScope.getToken()).success(function (data, status, headers, config) {
             $rootScope.show("Please wait... Processing");
             $scope.list = [];
+            $scope.categoriesLoaded = [];
             for (var i = 0; i < data.length; i++) {
-                if (data[i].isCompleted == false) {
+                $scope.categoryExist = false;
+                
+                numOfCategories = $scope.categoriesLoaded.length;
+                console.log(numOfCategories);
+                
+                if (numOfCategories == 0) {
+                        $scope.categoriesLoaded.push(data[i].category);
+                        console.log(data[i].category);
+                }
+                
+                for (var j = 0; j < numOfCategories; j++) {    
+                    
+                    if (data[i].category == $scope.categoriesLoaded[j])
+                    {
+                        $scope.categoryExist = true;
+                    }
+                }
+                
+                if ($scope.categoryExist == false)
+                {
                     $scope.list.push(data[i]);
+                    $scope.categoriesLoaded.push(data[i].category);
                 }
             };
             if($scope.list.length == 0)
@@ -99,6 +120,7 @@ angular.module('baseApp.controllers', ['baseApp.services'])
             $scope.newTask = function () {
                 $scope.newTemplate.show();
             };
+                
             $rootScope.hide();
         }).error(function (data, status, headers, config) {
             $rootScope.hide();
@@ -106,6 +128,12 @@ angular.module('baseApp.controllers', ['baseApp.services'])
         });
     });
  
+    $rootScope.selectCategory = function (category) {
+                $window.location.href="#/base/category"
+                $rootScope.category = category
+                $scope.$broadcast("$destroy");
+            };
+    
     $rootScope.$broadcast('fetchAll');
  
     $scope.markCompleted = function (id) {
@@ -122,8 +150,6 @@ angular.module('baseApp.controllers', ['baseApp.services'])
             });
     };
  
- 
- 
     $scope.deleteItem = function (id) {
         $rootScope.show("Please wait... Deleting from List");
         API.deleteItem(id, $rootScope.getToken())
@@ -135,8 +161,91 @@ angular.module('baseApp.controllers', ['baseApp.services'])
                 $rootScope.notify("Oops something went wrong!! Please try again later");
             });
     };
+    
+    $rootScope.setLawDescritpion = function (descriptionLink) {
+        $rootScope.currentLink = descriptionLink;
+        $scope.$broadcast("$destroy");
+    };
+    
+    $scope.showDescription = function (descriptionLink) {
+        $rootScope.show("Please wait... Accessing information outlet.");
+        $scope.setLawDescritpion(descriptionLink);
+        $window.location.href="#/base/description";
+    };
+    
+    $scope.showDescription = function ContentController($scope, $ionicSideMenuDelegate) {
+      $scope.toggleLeft = function() {
+        $ionicSideMenuDelegate.toggleLeft();
+      };
+    }
  
 })
+
+
+.controller('categoryCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
+    $rootScope.$on('fetchAll', function(){
+            API.getAllTopics($rootScope.getToken(),$rootScope.category).success(function (data, status, headers, config) {
+            $rootScope.show("Please wait... Processing");
+            $scope.topicList = [];
+            for (var i = 0; i < data.length; i++) {
+//                Code example for when there is a need  to separate loading parameters
+//                if (data[i].isCompleted == false) {
+                    $scope.topicList.push(data[i]);
+//                }
+            };
+            if($scope.list.length == 0)
+            {
+                $scope.noData = true;
+            }
+            else
+            {
+                $scope.noData = false;
+            }
+ 
+            $ionicModal.fromTemplateUrl('templates/newItem.html', function (modal) {
+                $scope.newTemplate = modal;
+            });
+ 
+            $scope.newTask = function () {
+                $scope.newTemplate.show();
+            };
+                
+            $rootScope.hide();
+        }).error(function (data, status, headers, config) {
+            $rootScope.hide();
+            $rootScope.notify("Oops something went wrong!! Please try again later");
+        });
+    });
+ 
+    $rootScope.selectTopic = function (topic, topicContent) {
+                
+                $window.location.href="#/base/topic"
+                $rootScope.topic = topic
+                $rootScope.topicContent = topicContent
+            };
+    
+    $rootScope.$broadcast('fetchAll');
+ 
+    
+    $rootScope.setLawDescritpion = function (descriptionLink) {
+        $rootScope.currentLink = descriptionLink;
+        $scope.$broadcast("$destroy");
+    };
+    
+    $scope.showDescription = function (descriptionLink) {
+        $rootScope.show("Please wait... Accessing information outlet.");
+        $scope.setLawDescritpion(descriptionLink);
+        $window.location.href="#/base/description";
+    };
+    
+    $scope.showDescription = function ContentController($scope, $ionicSideMenuDelegate) {
+      $scope.toggleLeft = function() {
+        $ionicSideMenuDelegate.toggleLeft();
+      };
+    }
+ 
+})
+
  
 .controller('completedCtrl', function ($rootScope,$scope, API, $window) {
     $rootScope.$on('fetchCompleted', function () {

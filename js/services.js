@@ -1,7 +1,7 @@
-angular.module('baseApp.services', [])
+angular.module('poliApp.services', [])
 
 .factory('API', function ($rootScope, $http, $ionicLoading, $window) {
-   //var base = "http://localhost:9804";
+//   var base = "http://localhost:9804";
     var base = "http://desolate-garden-1574.herokuapp.com";
     $rootScope.show = function (text) {
         $rootScope.loading = $ionicLoading.show({
@@ -52,21 +52,30 @@ angular.module('baseApp.services', [])
 
     return {
         signin: function (form) {
-            return $http.post(base+'/api/v1/baseApp/auth/login', form);
+            return $http.post(base+'/api/v1/poliApp/auth/login', form);
         },
         signup: function (form) {
-            return $http.post(base+'/api/v1/baseApp/auth/register', form);
+            return $http.post(base+'/api/v1/poliApp/auth/register', form);
         },
         getAll: function (email) {
-            return $http.get(base+'/api/v1/baseApp/data/list', {
+            return $http.get(base+'/api/v1/poliApp/data/list', {
                 method: 'GET',
                 params: {
                     token: email
                 }
             });
         },
+        getAllTopics: function (email, category) {
+            return $http.get(base+'/api/v1/poliApp/data/topicList', {
+                method: 'GET',
+                params: {
+                    token: email,
+                    category: category
+                }
+            });
+        },
         getOne: function (id, email) {
-            return $http.get(base+'/api/v1/baseApp/data/item/' + id, {
+            return $http.get(base+'/api/v1/poliApp/data/item/' + id, {
                 method: 'GET',
                 params: {
                     token: email
@@ -74,7 +83,7 @@ angular.module('baseApp.services', [])
             });
         },
         saveItem: function (form, email) {
-            return $http.post(base+'/api/v1/baseApp/data/item', form, {
+            return $http.post(base+'/api/v1/poliApp/data/item', form, {
                 method: 'POST',
                 params: {
                     token: email
@@ -82,7 +91,7 @@ angular.module('baseApp.services', [])
             });
         },
         putItem: function (id, form, email) {
-            return $http.put(base+'/api/v1/baseApp/data/item/' + id, form, {
+            return $http.put(base+'/api/v1/poliApp/data/item/' + id, form, {
                 method: 'PUT',
                 params: {
                     token: email
@@ -90,7 +99,7 @@ angular.module('baseApp.services', [])
             });
         },
         deleteItem: function (id, email) {
-            return $http.delete(base+'/api/v1/baseApp/data/item/' + id, {
+            return $http.delete(base+'/api/v1/poliApp/data/item/' + id, {
                 method: 'DELETE',
                 params: {
                     token: email
